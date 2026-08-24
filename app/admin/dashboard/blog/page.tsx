@@ -11,9 +11,8 @@ import {
   updateDocument,
   deleteDocument,
   uploadImage,
-} from "@/hooks/useFirestoreData";
+} from "@/hooks/useSupabaseData";
 import { BlogPost } from "@/lib/types";
-import { Timestamp } from "firebase/firestore";
 
 export default function BlogPage() {
   const { data: posts, loading } = useBlogPosts(false);
@@ -103,7 +102,6 @@ export default function BlogPage() {
         tags: tags.split(",").map((s) => s.trim()).filter(Boolean),
         published,
         order: editingItem?.order ?? posts.length,
-        updatedAt: Timestamp.now(),
       };
 
       if (editingItem) {

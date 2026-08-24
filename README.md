@@ -1,39 +1,56 @@
 # Minenhle's Portfolio
 
-## Supabase image storage
+Firebase App Hosting serves the Next.js application. Supabase owns all runtime
+application services:
 
-The CMS keeps its structured content in Firebase/Firestore and stores uploaded
-project, blog, testimonial, and experience images in Supabase Storage.
+- Supabase Auth for CMS email/password login
+- Supabase Postgres for portfolio and CMS data
+- Supabase Realtime for live CMS/site refreshes
+- Supabase Storage for uploaded images
 
-1. In the Supabase project `melvkemjdoluueaunvkn`, create a **public** bucket
-   named `portfolio-images`.
-2. Allow JPEG, PNG, SVG, and WebP files and set the bucket file-size limit to
-   at least 10 MB.
-3. Copy the Supabase service-role/secret key from **Project Settings > API**.
-   Do not put it in this repository or expose it with a `NEXT_PUBLIC_` name.
-4. Add it to Firebase App Hosting's Secret Manager integration:
+No Firebase Auth, Firestore, or Firebase Storage SDK is used by the app.
 
-   ```bash
-   firebase apphosting:secrets:set SUPABASE_SERVICE_ROLE_KEY
-   ```
+## One-time Supabase setup
 
-5. Add the comma-separated Firebase Auth email addresses allowed to upload and
-   delete images as a second runtime secret:
+### 1. Create the schema and security policies
 
-   ```bash
-   firebase apphosting:secrets:set CMS_ADMIN_EMAILS
-   ```
+Open **Supabase Dashboard > SQL Editor**, paste the contents of
+`supabase/migrations/20260824000000_initial_portfolio.sql`, and run it.
 
-Grant the App Hosting backend access when prompted. The checked-in
-`apphosting.yaml` already maps both secrets into the server runtime. The upload
-API fails closed if `CMS_ADMIN_EMAILS` is missing or the signed-in user's
-verified email is not in the list.
+The migration creates the portfolio tables, indexes, Realtime publication
+entries, least-privilege grants, and Row Level Security policies. Public visitors
+can read portfolio content and submit the contact form. Only a user listed in
+`admin_users` can use CMS write operations or manage images.
 
-For local development, copy `.env.example` to `.env.local` and supply the
-service-role key there. Firebase Admin uses Application Default Credentials in
-Firebase App Hosting. Local image-upload testing additionally requires Google
-Application Default Credentials for the Firebase project.
+### 2. Create the image bucket
 
-Existing Firebase Storage URLs remain valid and are not migrated or deleted.
-Any image uploaded after this change is saved in Supabase, and its public URL is
-stored in the existing Firestore document.
+Open **Storage > New bucket** and create `portfolio-images` with:
+
+- Public bucket: enabled
+- Maximum file size: 10 MB
+- Allowed MIME types: `image/jpeg`, `image/png`, `image/svg+xml`, `image/webp`
+
+Public access applies only to viewing images. The migration's Storage RLS
+policies restrict uploads, updates, and deletion to administrators.
+
+### 3. Create the CMS administrator
+
+Open **Authentication > Users > Add user** and create your email/password user.
+Copy its UUID, then run this in the SQL Editor with your real values:
+
+```sql
+insert into public.admin_users (user_id, email)
+values ('YOUR_AUTH_USER_UUID', 'YOUR_EMAIL_ADDRESS');
+```
+
+The CMS intentionally has no public signup and no Google login.
+
+## Configuration
+
+`apphosting.yaml` contains the Supabase project URL and anonymous/publishable
+key for Firebase App Hosting. These values are public client configuration;
+security is enforced by Supabase Auth, grants, and RLS. No Supabase service-role
+key is required by this application.
+
+For local development, copy `.env.example` to `.env.local` and insert the same
+anonymous/publishable key.

@@ -3,12 +3,11 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaGoogle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function AdminLoginPage() {
-  const { user, loading, signIn, signInWithGoogle } = useAuth();
+  const { user, loading, signIn } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,19 +28,6 @@ export default function AdminLoginPage() {
       router.push("/admin/dashboard");
     } catch (error: any) {
       toast.error(error.message || "Failed to sign in");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    try {
-      await signInWithGoogle();
-      toast.success("Welcome!");
-      router.push("/admin/dashboard");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to sign in with Google");
     } finally {
       setIsLoading(false);
     }
@@ -108,23 +94,6 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-slate-500">or continue with</span>
-            </div>
-          </div>
-
-          <button
-            onClick={handleGoogleSignIn}
-            disabled={isLoading}
-            className="w-full py-3 px-4 bg-white border border-slate-200 rounded-xl text-slate-700 font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
-          >
-            <FaGoogle className="text-lg" />
-            Google
-          </button>
         </div>
       </motion.div>
     </div>

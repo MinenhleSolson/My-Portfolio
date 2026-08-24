@@ -1,5 +1,3 @@
-import { Timestamp } from "firebase/firestore";
-
 // ============ Project Types ============
 export interface Project {
   id: string;
@@ -9,7 +7,7 @@ export interface Project {
   iconLists: string[];
   link: string;
   order: number;
-  createdAt: Timestamp;
+  createdAt: string;
 }
 
 // ============ Testimonial Types ============
@@ -20,7 +18,7 @@ export interface Testimonial {
   title: string;
   image: string;
   order: number;
-  createdAt: Timestamp;
+  createdAt: string;
 }
 
 // ============ Work Experience Types ============
@@ -31,7 +29,7 @@ export interface WorkExperience {
   className: string;
   thumbnail: string;
   order: number;
-  createdAt: Timestamp;
+  createdAt: string;
 }
 
 // ============ Blog Post Types ============
@@ -45,8 +43,8 @@ export interface BlogPost {
   tags: string[];
   published: boolean;
   order: number;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ============ Skill Types ============
@@ -107,7 +105,7 @@ export interface AdminUser {
   email: string;
   displayName: string;
   role: "admin" | "editor";
-  createdAt: Timestamp;
+  createdAt: string;
 }
 
 // ============ Contact Form Types ============
@@ -116,6 +114,6 @@ export interface ContactSubmission {
   name: string;
   email: string;
   message: string;
-  createdAt: Timestamp;
+  createdAt: string;
   read: boolean;
 }

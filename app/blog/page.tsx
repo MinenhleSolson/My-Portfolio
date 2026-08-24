@@ -4,14 +4,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaArrowLeft, FaArrowRight, FaClock, FaCalendar, FaMagnifyingGlass } from "react-icons/fa6";
-import { useBlogPosts } from "@/hooks/useFirestoreData";
+import { useBlogPosts } from "@/hooks/useSupabaseData";
 import { BlogPost } from "@/lib/types";
-import { Timestamp } from "firebase/firestore";
 
 // Format date helper
-const formatDate = (timestamp: Timestamp | undefined) => {
+const formatDate = (timestamp: string | undefined) => {
   if (!timestamp) return "";
-  const date = timestamp.toDate();
+  const date = new Date(timestamp);
   return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",

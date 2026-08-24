@@ -1,14 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useSkills } from "@/hooks/useFirestoreData";
+import { useSkills } from "@/hooks/useSupabaseData";
 import { skills as staticSkills, companies } from "@/data";
 
-// Fallback to static data if Firebase is not configured
+// Fallback to static data until Supabase has portfolio content.
 const useSkillsWithFallback = () => {
   const { data, loading, error } = useSkills();
   
-  // If we have Firebase data, use it
+  // If we have Supabase data, use it.
   if (!loading && data.length > 0) {
     return { data, loading: false };
   }
@@ -30,7 +30,7 @@ const Skills = () => {
     { value: "other", label: "Other", color: "from-orange-500 to-amber-500" },
   ];
 
-  // Use companies as fallback skills if no Firebase skills
+  // Use companies as fallback skills if no Supabase skills exist.
   const displaySkills = skills.length > 0 ? skills : companies.map((c, i) => ({
     id: String(c.id),
     name: c.name,

@@ -21,7 +21,7 @@ import {
   useExperience,
   useBlogPosts,
   useContactSubmissions,
-} from "@/hooks/useFirestoreData";
+} from "@/hooks/useSupabaseData";
 
 const menuItems = [
   { name: "Projects", icon: FaProjectDiagram, href: "/admin/dashboard/projects" },

@@ -1,17 +1,13 @@
+# Firebase App Hosting serves the Next.js application only.
+# All application services are provided by Supabase.
 env:
-  - variable: SUPABASE_URL
+  - variable: NEXT_PUBLIC_SUPABASE_URL
     value: https://melvkemjdoluueaunvkn.supabase.co
     availability:
+      - BUILD
       - RUNTIME
-  - variable: SUPABASE_STORAGE_BUCKET
-    value: portfolio-images
+  - variable: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lbHZrZW1qZG9sdXVlYXVudmtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MjQxNDMsImV4cCI6MjA4NjQwMDE0M30.gMyLnPgP4vu1ZyrtpF4Ab29QNiGbuGfSc6U-hU836xI
     availability:
-      - RUNTIME
-  - variable: SUPABASE_SERVICE_ROLE_KEY
-    secret: SUPABASE_SERVICE_ROLE_KEY
-    availability:
-      - RUNTIME
-  - variable: CMS_ADMIN_EMAILS
-    secret: CMS_ADMIN_EMAILS
-    availability:
+      - BUILD
       - RUNTIME

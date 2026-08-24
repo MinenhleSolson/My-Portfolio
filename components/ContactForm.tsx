@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import { FaPaperPlane, FaUser, FaEnvelope, FaComment } from "react-icons/fa";
-import { submitContactForm } from "@/hooks/useFirestoreData";
+import { submitContactForm } from "@/hooks/useSupabaseData";
 
 const ContactForm = () => {
   const [name, setName] = useState("");
