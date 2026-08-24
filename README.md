@@ -1,7 +1,7 @@
 # Minenhle's Portfolio
 
-Firebase App Hosting serves the Next.js application. Supabase owns all runtime
-application services:
+Firebase Hosting serves a static export of the Next.js application at
+`https://minenhle-cele.web.app`. Supabase owns all runtime application services:
 
 - Supabase Auth for CMS email/password login
 - Supabase Postgres for portfolio and CMS data
@@ -47,10 +47,32 @@ The CMS intentionally has no public signup and no Google login.
 
 ## Configuration
 
-`apphosting.yaml` contains the Supabase project URL and anonymous/publishable
-key for Firebase App Hosting. These values are public client configuration;
-security is enforced by Supabase Auth, grants, and RLS. No Supabase service-role
-key is required by this application.
+The Supabase project URL and anonymous/publishable key are public client
+configuration. Security is enforced by Supabase Auth, grants, and RLS. No
+Supabase service-role key is required by this application.
 
 For local development, copy `.env.example` to `.env.local` and insert the same
 anonymous/publishable key.
+
+## Firebase Hosting deployment
+
+`npm run build` exports the site to `out/`. `firebase.json` deploys that folder
+to the classic Firebase Hosting site `minenhle-cele`; App Hosting is not used.
+
+For a manual deployment, authenticate the Firebase CLI with
+`minenhlecele34@gmail.com`, then run:
+
+```bash
+npm run deploy
+```
+
+The workflows in `.github/workflows/` build pull-request previews and deploy
+every push to `main`. They require this GitHub Actions secret:
+
+```text
+FIREBASE_SERVICE_ACCOUNT_MINENHLE_CELE
+```
+
+Run `firebase init hosting:github` once while authenticated with the correct
+Firebase account to create the least-privilege service account and upload that
+secret to `MinenhleSolson/My-Portfolio`.

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { FaArrowLeft, FaClock, FaCalendar, FaShare, FaTwitter, FaLinkedin, FaLink } from "react-icons/fa6";
 import { getPublishedBlogPostBySlug } from "@/hooks/useSupabaseData";
 import { BlogPost } from "@/lib/types";
@@ -30,13 +29,18 @@ const getReadingTime = (content: string) => {
 };
 
 export default function BlogPostPage() {
-  const params = useParams();
-  const slug = params.slug as string;
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [showShareMenu, setShowShareMenu] = useState(false);
 
   useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get("slug");
+
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+
     const fetchPost = async () => {
       try {
         setPost(await getPublishedBlogPostBySlug(slug));
@@ -48,7 +52,7 @@ export default function BlogPostPage() {
     };
 
     fetchPost();
-  }, [slug]);
+  }, []);
 
   const handleShare = (platform: string) => {
     const url = window.location.href;

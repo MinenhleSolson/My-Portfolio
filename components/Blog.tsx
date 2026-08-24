@@ -40,7 +40,9 @@ const BlogCard = ({ post, index }: { post: BlogPost; index: number }) => {
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Link href={`/blog/${post.slug || post.id}`}>
+      <Link
+        href={`/blog/post?slug=${encodeURIComponent(post.slug || String(post.id))}`}
+      >
         <div className="group relative bg-white dark:bg-black-200 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-white/[0.1] hover:border-purple/50 dark:hover:border-purple/50 transition-all duration-300 hover:shadow-xl hover:shadow-purple/10">
           {/* Cover Image */}
           <div className="relative h-48 overflow-hidden">
