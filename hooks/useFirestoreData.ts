@@ -15,8 +15,7 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db, auth } from "@/lib/firebase";
 import {
   Project,
   Testimonial,
@@ -26,7 +25,6 @@ import {
   SiteSettings,
   ContactSubmission,
 } from "@/lib/types";
-import { v4 as uuidv4 } from "uuid";
 
 // ============ Generic Collection Hook ============
 function useFirestoreCollection<T>(
@@ -221,18 +219,54 @@ export async function uploadImage(
   file: File,
   path: string
 ): Promise<string> {
-  const fileName = `${uuidv4()}-${file.name}`;
-  const storageRef = ref(storage, `${path}/${fileName}`);
-  await uploadBytes(storageRef, file);
-  const downloadUrl = await getDownloadURL(storageRef);
-  return downloadUrl;
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("You must be signed in to upload images.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("folder", path);
+
+  const response = await fetch("/api/storage/images", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${await user.getIdToken()}`,
+    },
+    body: formData,
+  });
+  const result = (await response.json()) as { error?: string; url?: string };
+
+  if (!response.ok || !result.url) {
+    throw new Error(result.error || "The image could not be uploaded.");
+  }
+
+  return result.url;
 }
 
 // Delete image
 export async function deleteImage(imageUrl: string): Promise<void> {
   try {
-    const imageRef = ref(storage, imageUrl);
-    await deleteObject(imageRef);
+    const user = auth.currentUser;
+
+    if (!user) {
+      throw new Error("You must be signed in to delete images.");
+    }
+
+    const response = await fetch("/api/storage/images", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${await user.getIdToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ imageUrl }),
+    });
+
+    if (!response.ok) {
+      const result = (await response.json()) as { error?: string };
+      throw new Error(result.error || "The image could not be deleted.");
+    }
   } catch (error) {
     console.error("Error deleting image:", error);
   }

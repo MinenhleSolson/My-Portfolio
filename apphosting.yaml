@@ -1,0 +1,17 @@
+env:
+  - variable: SUPABASE_URL
+    value: https://melvkemjdoluueaunvkn.supabase.co
+    availability:
+      - RUNTIME
+  - variable: SUPABASE_STORAGE_BUCKET
+    value: portfolio-images
+    availability:
+      - RUNTIME
+  - variable: SUPABASE_SERVICE_ROLE_KEY
+    secret: SUPABASE_SERVICE_ROLE_KEY
+    availability:
+      - RUNTIME
+  - variable: CMS_ADMIN_EMAILS
+    secret: CMS_ADMIN_EMAILS
+    availability:
+      - RUNTIME
