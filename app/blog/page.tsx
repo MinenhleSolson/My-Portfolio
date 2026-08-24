@@ -34,7 +34,7 @@ const BlogCard = ({ post, index }: { post: BlogPost; index: number }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.05 }}
     >
-      <Link href={`/blog/${post.slug}`}>
+      <Link href={`/blog/post?slug=${encodeURIComponent(post.slug)}`}>
         <div className="group relative bg-white rounded-2xl overflow-hidden border border-slate-200/50 hover:border-purple/50 transition-all duration-300 hover:shadow-xl hover:shadow-purple/10">
           {/* Cover Image */}
           <div className="relative h-48 overflow-hidden">
