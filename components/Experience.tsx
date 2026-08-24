@@ -4,14 +4,14 @@ import React from "react";
 import { motion } from "framer-motion";
 
 import { workExperience as staticWorkExperience } from "@/data";
-import { useExperience } from "@/hooks/useFirestoreData";
+import { useExperience } from "@/hooks/useSupabaseData";
 import { Button } from "./ui/MovingBorders";
 
 const Experience = () => {
-  const { data: firebaseExperience, loading } = useExperience();
+  const { data: managedExperience, loading } = useExperience();
   
-  // Use Firebase data if available, otherwise fall back to static data
-  const workExperience = firebaseExperience.length > 0 ? firebaseExperience : staticWorkExperience;
+  // Use Supabase data if available, otherwise fall back to static data.
+  const workExperience = managedExperience.length > 0 ? managedExperience : staticWorkExperience;
   return (
     <section className="w-full">
       {/* Dark themed full-width container for Work Experience section */}

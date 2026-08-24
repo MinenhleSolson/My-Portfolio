@@ -9,7 +9,7 @@ import {
   addDocument,
   updateDocument,
   deleteDocument,
-} from "@/hooks/useFirestoreData";
+} from "@/hooks/useSupabaseData";
 import { Skill } from "@/lib/types";
 
 const categories = [

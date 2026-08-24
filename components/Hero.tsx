@@ -7,12 +7,12 @@ import Image from "next/image";
 import MagicButton from "./MagicButton";
 import { Spotlight } from "./ui/Spotlight";
 import { TextGenerateEffect } from "./ui/TextGenerateEffect";
-import { useSiteSettings } from "@/hooks/useFirestoreData";
+import { useSiteSettings } from "@/hooks/useSupabaseData";
 
 const Hero = () => {
   const { data: siteSettings, loading } = useSiteSettings();
   
-  // Use Firebase data if available, otherwise fall back to static content
+  // Use Supabase data if available, otherwise fall back to static content.
   const heroTagline = siteSettings?.heroTagline || "Transforming Ideas into Engaging User Experiences";
   const heroSubtitle = siteSettings?.heroSubtitle || "Hi! I'm Minenhle, a Developer based in South Africa.";
 

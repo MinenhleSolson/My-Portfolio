@@ -1,21 +1,14 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  User,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { User } from "@supabase/supabase-js";
+
+import { supabase } from "@/lib/supabase";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -26,29 +19,93 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    let isActive = true;
+
+    const resolveAdminUser = async (authUser: User | null) => {
+      if (!authUser) {
+        if (isActive) {
+          setUser(null);
+          setLoading(false);
+        }
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", authUser.id)
+        .maybeSingle();
+
+      if (!isActive) {
+        return;
+      }
+
+      if (error || !data) {
+        setUser(null);
+        setLoading(false);
+        await supabase.auth.signOut();
+        return;
+      }
+
+      setUser(authUser);
       setLoading(false);
+    };
+
+    void supabase.auth.getSession().then(({ data }) =>
+      resolveAdminUser(data.session?.user ?? null)
+    );
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      window.setTimeout(
+        () => void resolveAdminUser(session?.user ?? null),
+        0
+      );
     });
 
-    return () => unsubscribe();
+    return () => {
+      isActive = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
-  };
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-  const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const { data: admin, error: adminError } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", data.user.id)
+      .maybeSingle();
+
+    if (adminError || !admin) {
+      await supabase.auth.signOut();
+      throw new Error("This Supabase account is not authorized for the CMS.");
+    }
+
+    setUser(data.user);
   };
 
   const logout = async () => {
-    await signOut(auth);
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signInWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, loading, signIn, logout }}>
       {children}
     </AuthContext.Provider>
   );

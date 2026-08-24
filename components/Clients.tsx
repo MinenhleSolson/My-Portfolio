@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { companies, testimonials as staticTestimonials } from "@/data";
-import { useTestimonials } from "@/hooks/useFirestoreData";
+import { useTestimonials } from "@/hooks/useSupabaseData";
 import { InfiniteMovingCards } from "./ui/InfiniteCards";
 
 const techCategories: Record<string, string> = {
@@ -109,12 +109,12 @@ const defaultColor = {
 const displayName = (name: string) => name.replace(/\.$/, "");
 
 const Clients = () => {
-  const { data: firebaseTestimonials, loading } = useTestimonials();
+  const { data: managedTestimonials, loading } = useTestimonials();
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
-  // Use Firebase data if available, otherwise fall back to static data
+  // Use Supabase data if available, otherwise fall back to static data.
   const testimonials =
-    firebaseTestimonials.length > 0 ? firebaseTestimonials : staticTestimonials;
+    managedTestimonials.length > 0 ? managedTestimonials : staticTestimonials;
 
   return (
     <section id="testimonials" className="py-20">

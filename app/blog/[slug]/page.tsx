@@ -5,17 +5,15 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FaArrowLeft, FaClock, FaCalendar, FaShare, FaTwitter, FaLinkedin, FaLink } from "react-icons/fa6";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { getPublishedBlogPostBySlug } from "@/hooks/useSupabaseData";
 import { BlogPost } from "@/lib/types";
-import { Timestamp } from "firebase/firestore";
 import ReactMarkdown from "react-markdown";
 import toast from "react-hot-toast";
 
 // Format date helper
-const formatDate = (timestamp: Timestamp | undefined) => {
+const formatDate = (timestamp: string | undefined) => {
   if (!timestamp) return "";
-  const date = timestamp.toDate();
+  const date = new Date(timestamp);
   return date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -41,16 +39,7 @@ export default function BlogPostPage() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const q = query(
-          collection(db, "blogPosts"),
-          where("slug", "==", slug),
-          where("published", "==", true)
-        );
-        const snapshot = await getDocs(q);
-        if (!snapshot.empty) {
-          const doc = snapshot.docs[0];
-          setPost({ id: doc.id, ...doc.data() } as BlogPost);
-        }
+        setPost(await getPublishedBlogPostBySlug(slug));
       } catch (error) {
         console.error("Error fetching post:", error);
       } finally {

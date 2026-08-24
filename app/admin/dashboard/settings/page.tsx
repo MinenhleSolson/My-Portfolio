@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { FaSave, FaPlus, FaTrash } from "react-icons/fa";
-import { useSiteSettings, updateSiteSettings } from "@/hooks/useFirestoreData";
+import { useSiteSettings, updateSiteSettings } from "@/hooks/useSupabaseData";
 import { NavItem, SocialLink } from "@/lib/types";
 
 export default function SettingsPage() {

@@ -1,13 +1,13 @@
 "use client";
 
 import { gridItems as staticGridItems } from "@/data";
-import { useSiteSettings } from "@/hooks/useFirestoreData";
+import { useSiteSettings } from "@/hooks/useSupabaseData";
 import { BentoGrid, BentoGridItem } from "./ui/BentoGrid";
 
 const Grid = () => {
   const { data: siteSettings, loading } = useSiteSettings();
   
-  // Use Firebase data if available, otherwise fall back to static data
+  // Use Supabase data if available, otherwise fall back to static data.
   const gridItems = siteSettings?.gridItems && siteSettings.gridItems.length > 0 
     ? siteSettings.gridItems 
     : staticGridItems;

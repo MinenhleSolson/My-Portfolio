@@ -11,9 +11,8 @@ import {
   updateDocument,
   deleteDocument,
   uploadImage,
-} from "@/hooks/useFirestoreData";
+} from "@/hooks/useSupabaseData";
 import { Project } from "@/lib/types";
-import { Timestamp } from "firebase/firestore";
 
 export default function ProjectsPage() {
   const { data: projects, loading } = useProjects();

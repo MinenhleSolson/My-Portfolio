@@ -4,15 +4,15 @@ import { FaLocationArrow } from "react-icons/fa6";
 import { motion } from "framer-motion";
 
 import { projects as staticProjects } from "@/data";
-import { useProjects } from "@/hooks/useFirestoreData";
+import { useProjects } from "@/hooks/useSupabaseData";
 import Link from "next/link";
 import { PinContainer } from "./ui/Pin";
 
 const RecentProjects = () => {
-  const { data: firebaseProjects, loading } = useProjects();
+  const { data: managedProjects, loading } = useProjects();
   
-  // Use Firebase data if available, otherwise fall back to static data
-  const projects = firebaseProjects.length > 0 ? firebaseProjects : staticProjects;
+  // Use CMS data if available, otherwise fall back to static data
+  const projects = managedProjects.length > 0 ? managedProjects : staticProjects;
 
   return (
     <div className="py-20">

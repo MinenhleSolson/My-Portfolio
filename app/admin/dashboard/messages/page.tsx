@@ -7,7 +7,7 @@ import {
   useContactSubmissions,
   updateDocument,
   deleteDocument,
-} from "@/hooks/useFirestoreData";
+} from "@/hooks/useSupabaseData";
 
 export default function MessagesPage() {
   const { data: messages, loading } = useContactSubmissions();
@@ -80,7 +80,9 @@ export default function MessagesPage() {
                   </a>
                   <p className="text-slate-600 mt-3 whitespace-pre-wrap">{msg.message}</p>
                   <p className="text-xs text-slate-400 mt-3">
-                    {msg.createdAt?.toDate?.()?.toLocaleDateString() || "Unknown date"}
+                    {msg.createdAt
+                      ? new Date(msg.createdAt).toLocaleDateString()
+                      : "Unknown date"}
                   </p>
                 </div>
                 <div className="flex gap-2 ml-4">

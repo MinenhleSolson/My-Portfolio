@@ -11,7 +11,7 @@ import {
   updateDocument,
   deleteDocument,
   uploadImage,
-} from "@/hooks/useFirestoreData";
+} from "@/hooks/useSupabaseData";
 import { WorkExperience } from "@/lib/types";
 
 export default function ExperiencePage() {
